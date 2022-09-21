@@ -35,6 +35,7 @@ function drawPaddle() {
 function draw() {
     c. clearRect(0, 0, canvas.width, canvas.height);
     drawBall();
+    drawPaddle();
 
     if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
         dx = -dx;
@@ -44,14 +45,14 @@ function draw() {
         dy = -dy;
     }
 
-    if (rightPressed) {
-        paddleX =+ 7;
-    }  else if (leftPressed) {
-        paddleX -= 7;
-    }
-
     x += dx;
     y += dy;
+
+    if (rightPressed) {
+        paddleX = Math.min(paddleX + 5, canvas.width - paddleWidth);
+    }  else if (leftPressed) {
+        paddleX = Math.max(paddleX - 5, 0);
+    }
 }
 
 document.addEventListener("keydown", keyDownHandler, false);
