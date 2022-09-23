@@ -25,7 +25,7 @@ const bricks = [];
 for (let c = 0; c < brickColumnCount; c++) {
     bricks[c] =[];
     for (let r = 0; r < brickRowCount; r++) {
-        bricks[c][r] = { x: 0, y: 0 };
+        bricks[c][r] = { x: 0, y: 0, status: 1 };
     }
 }
 
@@ -45,6 +45,20 @@ function keyUpHandler(e) {
         rightPressed = false;
     }   else if (e.key === "Left" || e.key === "ArrowLeft") {
         leftPressed = false;
+    }
+}
+
+function collisionDetection() {
+    for (let col = 0; col < brickColumnCount; col++) {
+        for (let row = 0; row < brickRowCount; row++) {
+            const b = bricks[col][row];
+            if ( b.status === 1) {
+                if (x > b.x && x < b.x + brickWidth && y > b.y && y < b.y + brickHeight) {
+                    dy = -dy;
+                    b.status = 0;
+                }
+            }
+        }
     }
 }
 
@@ -68,15 +82,17 @@ function drawPaddle() {
 function drawBricks() {
     for (let col = 0; col < brickColumnCount; col++) {
         for (let row = 0; row < brickRowCount; row++) {
-            const brickX = (col * (brickWidth + brickPadding)) + brickOffsetLeft;
-            const brickY = (row * (brickHeight + brickPadding)) + brickOffsetTop;
-            bricks[col][row].x = brickX;
-            bricks[col][row].y = brickY;
-            c.beginPath();
-            c.rect(brickX, brickY, brickWidth, brickHeight);
-            c.fillStyle = "#0095dd";
-            c.fill();
-            c.closePath();
+            if (bricks[col][row].status === 1) {
+                const brickX = (col * (brickWidth + brickPadding)) + brickOffsetLeft;
+                const brickY = (row * (brickHeight + brickPadding)) + brickOffsetTop;
+                bricks[col][row].x = brickX;
+                bricks[col][row].y = brickY;
+                c.beginPath();
+                c.rect(brickX, brickY, brickWidth, brickHeight);
+                c.fillStyle = "#0095dd";
+                c.fill();
+                c.closePath();
+            }
         }
     }
 }
@@ -86,6 +102,7 @@ function draw() {
     c. clearRect(0, 0, canvas.width, canvas.height);
     drawBricks();
     drawBall();
+    collisionDetection();
     drawPaddle();
 
     if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
