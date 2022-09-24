@@ -12,6 +12,7 @@ let dx = 2;
 let dy = -2;
 let rightPressed = false;
 let leftPressed = false;
+let score = 0;
 
 const brickRowCount = 3;
 const brickColumnCount = 5;
@@ -56,10 +57,22 @@ function collisionDetection() {
                 if (x > b.x && x < b.x + brickWidth && y > b.y && y < b.y + brickHeight) {
                     dy = -dy;
                     b.status = 0;
+                    score += 2;
+                    if (score === brickRowCount * brickColumnCount * 2) {
+                        alert("YOU WIN, CONGRATULATIONS!");
+                        document.location.reload();
+                        clearInterval(interval);
+                    }
                 }
             }
         }
     }
+}
+
+function drawScore() {
+    c.font = "16px Arial";
+    c.fillStyle = "#0095dd";
+    c.fillText(`Score: ${score}`, 8, 20);
 }
 
 // this draws the ball on the screen
@@ -104,6 +117,7 @@ function draw() {
     drawBall();
     collisionDetection();
     drawPaddle();
+    drawScore();
 
     if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
         dx = -dx;
